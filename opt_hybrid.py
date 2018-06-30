@@ -22,22 +22,10 @@ import pandas as pd
 NUM_RECOMMENDATIONS=500
 
 # data folder
-FOLDER_TRAIN = '/media/malte/Datastorage/mpd-share/data_formated/'
-#FOLDER_TRAIN = '/media/malte/Datastorage/mpd-share/data_formated_100k2/'
-#FOLDER_TRAIN = '/media/mpd-share/data_formated_100k/'
-#FOLDER_TRAIN = '/media/malte/Datastorage/mpd-share/data_formated_50k/'
-#FOLDER_TRAIN = 'data/data_formated_50k/'
+FOLDER_TRAIN = 'data/data_formatted_50k/'
+FOLDER_TEST = 'data/sample_50k_similar/'
 
-#FOLDER_TEST = '/media/mpd-share/online/'
-FOLDER_TEST = '/media/malte/Datastorage/mpd-share/sample4_similar/'
-#FOLDER_TEST = '/media/malte/Datastorage/mpd-share/sample_100k2_similar/'
-#FOLDER_TEST = '/media/mpd-share/sample3_random/'
-#FOLDER_TEST = '/media/mpd-share/sample3_similar/'
-#FOLDER_TEST = '/media/mpd-share/sample4_100k_similar/'
-#FOLDER_TEST = '/media/malte/Datastorage/mpd-share/sample_50k_similar/'
-#FOLDER_TEST = '/media/mpd-share/sample_20k_random/'
-
-NICKNN = FOLDER_TEST + 'results_knn_disk_tf-ratio-s50_idf-log10_cosine-s0_k1000.csv-fill-sol.csv'
+DKNN = FOLDER_TEST + 'results_knn_disk_tf-ratio-s50_idf-log10_cosine-s0_k1000.csv-fill-sol.csv'
 IKNN = FOLDER_TEST + 'results_iknn-100-a.75-idfw.csv'
 SKNN = FOLDER_TEST + 'results_sknn-1000-0-idfw.csv'
 IMPLICIT = FOLDER_TEST + 'results_implicitopt-300f-10e-filter20.5.csv'
@@ -63,7 +51,7 @@ def main():
     def objective_sv( popt ):
         algs = {}
         
-        nicknn = Solution( NICKNN )
+        nicknn = Solution( DKNN )
         iknn = Solution( IKNN )
         sknn = Solution( SKNN )
         implicit = Solution( IMPLICIT )
@@ -189,6 +177,4 @@ def eval(list, basepath):
 
 if __name__ == '__main__':
     main()
-    #eval( ['sknn-500-5000-artist2' ] ) #, 'ar-100', 'sr-100', 'iknn-100'] )
-    #eval( ['sknn-500-5000', 'sknn-500-5000-artist2', 'iknn-5', 'iknn-100', 'iknn-100-div', 'iknn-100-log', 'implicit-64f-15e', 'implicit-128f-15e', 'implicit-256f-15e', 'implicit-512f-15e', 'implicit-128f-10e', 'implicit-128f-25e'] )
     

@@ -22,21 +22,8 @@ import pandas as pd
 NUM_RECOMMENDATIONS=500
 
 # data folder
-FOLDER_TRAIN = '/media/malte/Datastorage/mpd-share/data_formated/'
-#FOLDER_TRAIN = '/media/malte/Datastorage/mpd-share/data_formated_100k2/'
-#FOLDER_TRAIN = '/media/mpd-share/data_formated_100k/'
-#FOLDER_TRAIN = '/media/malte/Datastorage/mpd-share/data_formated_50k/'
-#FOLDER_TRAIN = '/media/malte/Datastorage/mpd-share/data_formated_20k/'
-#FOLDER_TRAIN = 'data/data_formated_50k/'
-
-#FOLDER_TEST = '/media/mpd-share/online/'
-FOLDER_TEST = '/media/malte/Datastorage/mpd-share/sample4s_similar/'
-#FOLDER_TEST = '/media/malte/Datastorage/mpd-share/sample_100k2_similar/'
-#FOLDER_TEST = '/media/mpd-share/sample3_random/'
-#FOLDER_TEST = '/media/mpd-share/sample3_similar/'
-#FOLDER_TEST = '/media/mpd-share/sample4_100k_similar/'
-#FOLDER_TEST = '/media/malte/Datastorage/mpd-share/sample_50k_similar/'
-#FOLDER_TEST = '/media/malte/Datastorage/mpd-share/sample_20k_random/'
+FOLDER_TRAIN = 'data/data_formatted_50k/'
+FOLDER_TEST = 'data/data_formatted_50k/'
 
 def main():
     
