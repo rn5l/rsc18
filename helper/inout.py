@@ -23,6 +23,7 @@ FOLDER_TEST = '/media/mpd-share/sample_random/'
 # where to save the result file
 PLAYLISTS_FILE = "playlists.csv"
 TRACKS_FILE = "tracks.csv"
+TRACKS_ADD_FILE = "all_tracks_metadata.csv"
 ARTISTS_FILE = "artists.csv"
 PLAYLISTS_TRACKS_FILE = "playlists_tracks.csv"
 PLAYLISTS_TRACKS_FILE_VAL = "playlists_tracks_validation.csv"
@@ -111,13 +112,21 @@ def load_test( folder ):
     
     return lists, actions
 
+def load_meta_track( folder, feather=False ):
+    if feather:
+        tracks = pd.read_feather( folder + TRACKS_FILE + '.fthr' )
+        return tracks
+    
+    tracks = pd.read_csv( folder + TRACKS_ADD_FILE )
+    return tracks
+
 def load_submission( submission ):
     
     pass
 
-def save_submission( folder, frame, file, track='main', team='KAENEN', contact='iman.kamehkhosh@tu-dortmund.de' ):
+def save_submission( frame, file, track='main', team='KAENEN', contact='iman.kamehkhosh@tu-dortmund.de' ):
     
-    _, _, tracks = load_meta(folder, feather=True)
+    playlists, artists, tracks = load_meta(FOLDER, feather=True)
         
     fh = open( file, 'w+' )
     
@@ -127,7 +136,7 @@ def save_submission( folder, frame, file, track='main', team='KAENEN', contact='
     fh.write( '\n' )
     
     frame = frame.merge( tracks[['track_id','track_uri']] )
-    frame = frame.sort_values( ['playlist_id','confidence'], ascending=[True, False] )
+    frame = frame.sort_values( ['playlist_id','confidence'], ascending=False )
     
     pid = -1
     
