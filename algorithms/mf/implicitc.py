@@ -2,21 +2,23 @@
 """
 Created on Fri Jun 26 11:57:27 2015
 
-@author: Malte
+@author: malte
 """
 
+from scipy import sparse
+import time
+
+import implicit
 import numpy as np
 import pandas as pd
-from scipy import sparse
-import implicit
+
 
 class ColdImplicit:
     '''
-    ColdImplicit( n_factors = 100, epochs = 10, lr = 0.01, reg=0.01, algo='als', idf_weight=False, session_key = 'playlist_id', item_key = 'track_id')
-            
+    ColdImplicit( n_factors = 100, epochs = 10, lr = 0.01, reg=0.01, algo='als', idf_weight=False, session_key = 'playlist_id', item_key = 'track_id'):
+        
     Parameters
     --------
-    
     '''
     def __init__(self, n_factors = 100, epochs = 10, lr = 0.01, reg=0.01, algo='als', idf_weight=False, session_key = 'playlist_id', item_key = 'track_id'):
         self.factors = n_factors
@@ -43,9 +45,9 @@ class ColdImplicit:
         '''
         
         data = train['actions']
-        datat = test['actions']
+        #datat = test['actions']
         
-        data = pd.concat([data,datat])
+        #data = pd.concat([data,datat])
         
         itemids = data[self.item_key].unique()
         self.n_items = len(itemids)
@@ -56,12 +58,24 @@ class ColdImplicit:
         self.n_sessions = len(sessionids)
         self.useridmap = pd.Series(data=np.arange(self.n_sessions), index=sessionids)
         
+        tstart = time.time()
+        
+        data = pd.merge(data, pd.DataFrame({self.item_key:self.itemidmap.index, 'ItemIdx':self.itemidmap[self.itemidmap.index].values}), on=self.item_key, how='inner')
+        data = pd.merge(data, pd.DataFrame({self.session_key:self.useridmap.index, 'SessionIdx':self.useridmap[self.useridmap.index].values}), on=self.session_key, how='inner')
+        
+        print( 'add index in {}'.format( (time.time() - tstart) ) )
+        
+        tstart = time.time()
+        
         ones = np.ones( len(data) )
         
-        row_ind = self.itemidmap[ data.track_id.values ]
-        col_ind = self.useridmap[ data.playlist_id.values ] 
+        row_ind = data.ItemIdx
+        col_ind = data.SessionIdx
         
         self.mat = sparse.csr_matrix((ones, (row_ind, col_ind)))
+        self.tmp = self.mat.T.tocsr()
+
+        print( 'matrix in {}'.format( (time.time() - tstart) ) )
         
         if self.algo == 'als':
             self.model = implicit.als.AlternatingLeastSquares( factors=self.factors, iterations=self.epochs, regularization=self.reg )
@@ -69,14 +83,12 @@ class ColdImplicit:
             self.model = implicit.bpr.BaysianPersonalizedRanking( factors=self.factors, iterations=self.epochs, regularization=self.reg )
                 
         self.model.fit(self.mat)
-                
-        self.tmp = self.mat.T.tocsr()
-        
+                        
         if self.idf_weight:
             self.idf = pd.DataFrame()
-            self.idf['idf'] = train.groupby( self.item_key ).size()
-            self.idf['idf'] = np.log( train[self.session_key].nunique() / self.idf['idf'] )
-            self.idf = self.idf['idf'].to_dict()
+            self.idf['idf'] = data.groupby( self.item_key ).size()
+            self.idf['idf'] = np.log( data[self.session_key].nunique() / self.idf['idf'] )
+            #self.idf = self.idf['idf'].to_dict()
     
     def predict( self, name=None, tracks=None, playlist_id=None, artists=None, num_hidden=None ):
         '''
@@ -109,7 +121,7 @@ class ColdImplicit:
         if self.idf_weight:
             weight = self.idf.ix[items]['idf'].values
             factors = self.model.item_factors[itemidxs]
-            factors = factors * weight
+            factors = factors * np.array( [weight] ).T
             
             uF = factors.sum(axis=0) / weight.sum()
         else:
@@ -121,7 +133,7 @@ class ColdImplicit:
         res = pd.DataFrame.from_dict(res_dict)
         
         res = res[ ~np.in1d( res.track_id, tracks ) ]
-        res.sort_values( 'confidence', ascending=False, inplace=True )
+        res.sort_values( ['confidence','track_id'], ascending=[False,True], inplace=True )
         
-        return res.head(500)
+        return res.head( 500 )
     

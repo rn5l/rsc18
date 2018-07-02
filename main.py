@@ -13,7 +13,9 @@ from algorithms.hybrid.Weighted import Weighted
 from algorithms.knn.iknn import ItemKNN
 from algorithms.knn.sknn import SessionKNN
 from algorithms.knn_disk.knn_disk import KNNDisk
+from algorithms.mf.implicitc import ColdImplicit
 from algorithms.mf.implicitu import Implicit
+from algorithms.rerank.MetaRerank import MetaRerank
 from algorithms.string_matching.implicit_match import ImplicitStringMatch
 from algorithms.string_matching.string_matching import StringMatching
 from helper import inout
@@ -39,7 +41,7 @@ def main():
     nknn = Fill( KNNDisk( 1000, tf_method='ratio-s50', idf_method='log10', similarity='cosine', sim_denom_add=0, folder=FOLDER_TEST ), mp )
     sknn = Fill( SessionKNN( 2000, 0, idf_weight=1 ), mp )
     iknn = Fill( ItemKNN( 100, alpha=0.75, idf_weight=1, folder=FOLDER_TEST ), mp )
-    implicit = Fill( Implicit( 300, epochs=10, reg=0.08, filter=(20,1), algo='als' ), mp )
+    implicit = Fill( ColdImplicit( 300, epochs=10, reg=0.08, filter=(20,1), algo='als' ), mp )
     
     smatch = Fill( StringMatching(), mp )
     imatch = Fill( ImplicitStringMatch( 128, add_artists=True ), mp )
@@ -48,7 +50,8 @@ def main():
     hybrid = Weighted( [nknn,iknn,sknn,implicit], [0.4,0.3,0.2,0.1] ) #best one for lists with 5+ seed tracks
     firstcat = Weighted( [hybrid,titlerec], [0.7,0.3] ) #best one for lists with only one seed track
     
-    algs['recommender'] = Switch( [titlerec,firstcat,hybrid], [1,5,101] )
+    algs['recommender'] = Switch( [titlerec,firstcat,hybrid], [1,5,101] ) #main
+    algs['meta-recommender'] = MetaRerank( Switch( [titlerec,firstcat,hybrid], [1,5,101] ) ) #creative
     
     #to make the process more flexible, all methods have been trained and reused the following way:
 #     #first run
