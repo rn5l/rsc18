@@ -101,7 +101,7 @@ def create_similar_sample( playlists, actions, challenge_set, target, reduce=1 )
             #print( list_example.name )
             if list_example.name is not None and list_example.name != '' and list_example.name != 'nan' and not type(list_example.name) is float:
                 sample['name'].append( slist.name.values[0] )
-                print( 'added' )
+                #print( 'added' )
             else:
                 sample['name'].append( None )
                 

@@ -6,11 +6,11 @@ Created on 17.04.2018
 
 import implicit
 from nltk import stem as stem, tokenize as tokenise
-from sympy.physics.quantum.matrixutils import sparse
 
 from fuzzywuzzy import fuzz
 import numpy as np
 import pandas as pd
+from scipy import sparse
 
 class ImplicitStringMatch:
     

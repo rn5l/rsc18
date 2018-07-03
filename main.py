@@ -41,7 +41,8 @@ def main():
     nknn = Fill( KNNDisk( 1000, tf_method='ratio-s50', idf_method='log10', similarity='cosine', sim_denom_add=0, folder=FOLDER_TEST ), mp )
     sknn = Fill( SessionKNN( 2000, 0, idf_weight=1 ), mp )
     iknn = Fill( ItemKNN( 100, alpha=0.75, idf_weight=1, folder=FOLDER_TEST ), mp )
-    implicit = Fill( ColdImplicit( 300, epochs=10, reg=0.08, filter=(20,1), algo='als' ), mp )
+    implicit = Fill( ColdImplicit( 300, epochs=10, reg=0.08, algo='als', idf_weight=True ), mp )
+    #implicit = Fill( Implicit( 300, epochs=10, reg=0.08, filter=(20,1), algo='als' ), mp )
     
     smatch = Fill( StringMatching(), mp )
     imatch = Fill( ImplicitStringMatch( 128, add_artists=True ), mp )
@@ -51,7 +52,7 @@ def main():
     firstcat = Weighted( [hybrid,titlerec], [0.7,0.3] ) #best one for lists with only one seed track
     
     algs['recommender'] = Switch( [titlerec,firstcat,hybrid], [1,5,101] ) #main
-    algs['meta-recommender'] = MetaRerank( Switch( [titlerec,firstcat,hybrid], [1,5,101] ) ) #creative
+    #algs['meta-recommender'] = MetaRerank( Switch( [titlerec,firstcat,hybrid], [1,5,101] ) ) #creative
     
     #to make the process more flexible, all methods have been trained and reused the following way:
 #     #first run
@@ -151,4 +152,3 @@ def eval(list):
     
 if __name__ == '__main__':
     main()
-    #eval( ['sknn-500-5000-artist2' ] ) #, 'ar-100', 'sr-100', 'iknn-100'] )

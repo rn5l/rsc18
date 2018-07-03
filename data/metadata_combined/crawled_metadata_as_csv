@@ -1,0 +1,3 @@
+all_tracks_metadata.csv
+acousticness,danceability,energy,instrumentalness,loudness,mode,popularity,speechiness,tempo,time_signature,track_id,valence
+0.0379,0.77,0.846,0.0,-5.1,0.0,21.0,0.0386,129.982,4.0,0p7pl7CpVe3aakojkKDakI,0.7759999999999999
