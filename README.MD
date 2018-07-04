@@ -14,7 +14,7 @@ pip install -r requirements.txt
   * prepare_data.py (Combines and converts the files into CSV with int ids for tracks, artists, and albums)
   * prepare_test.py (Converts the challenge set file into CSV while mapping the URIs to our int ids)
   * crawl_metadata.py (Optional, uses the libary spotipy to collect additional meta data for all tracks in the dataset)
-    * User, CLIENT\_ID, and CLIENT\_SECRET have to be adjusted in the file. 
+    * USER, CLIENT\_ID, and CLIENT\_SECRET have to be adjusted in the file. 
   * create_sample.py (Creates a sample of 50k random playlists with a test set of 500 playlists)
   * caculate_parts.py (Contains the code to individualy compute the predictions for all employed methods for the 50k sample)
   * combine_parts.py (Combines all the individual solutions in our hybrid approach for the 50k sample)
