@@ -43,7 +43,7 @@ class ImplicitStringMatch:
             new_actions = new_actions.reset_index()
             max_pl = self.playlists.playlist_id.max()
             new_actions['playlist_id'] = new_actions.artist_id.transform( lambda x: max_pl + x )
-            self.actions = pd.concat( [ self.actions, new_actions ] )
+            self.actions = pd.concat( [ self.actions, new_actions ], sort=False )
             
             new_lists = pd.DataFrame()
             new_lists['artist_id'] = new_actions.groupby( ['playlist_id'] ).artist_id.min()
@@ -51,7 +51,7 @@ class ImplicitStringMatch:
             new_lists = new_lists.merge( train['artists'][ ['artist_id', 'artist_name'] ], on='artist_id', how='inner' )
             new_lists['name'] = new_lists['artist_name']
             del new_lists['artist_name']
-            self.playlists = pd.concat( [ self.playlists, new_lists ] )
+            self.playlists = pd.concat( [ self.playlists, new_lists ], sort=False )
         
         #normalize playlist names
         self.playlists['name'] = self.playlists['name'].apply(lambda x: self.normalise(str(x), True, True))

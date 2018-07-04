@@ -20,7 +20,7 @@ class MetaRerank:
         self.threshold = threshold
         
         #self.fields = ['acousticness','danceability','energy','instrumentalness','loudness','mode','speechiness','tempo','valence']
-        self.fields = ['energy','loudness','tempo'
+        self.fields = ['energy','loudness','tempo']
         
     def train(self, data, test=None):
         self.base.train(data, test=test)

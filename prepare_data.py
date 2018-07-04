@@ -141,8 +141,9 @@ if __name__ == '__main__':
     df_tracks = pd.DataFrame.from_dict(tracks)
     df_artists = pd.DataFrame.from_dict(artists)
     df_playlists_tracks = pd.DataFrame.from_dict(playlists_tracks)
-        
+
     print('saving files...')
+    inout.ensure_dir( PLAYLISTS_FILE )
     df_playlists.to_csv(PLAYLISTS_FILE, index=False)
     df_tracks.to_csv(TRACKS_FILE, index=False)
     df_artists.to_csv(ARTISTS_FILE, index=False)

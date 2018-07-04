@@ -473,7 +473,7 @@ class SessionKNN:
                
         if self.sample_size == 0: #use all session as possible neighbors
             
-            print('!!!!! runnig KNN without a sample size (check config)')
+            #print('!!!!! runnig KNN without a sample size (check config)')
             return relevant_sessions
 
         else: #sample some sessions

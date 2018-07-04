@@ -5,27 +5,27 @@ Created on Fri Jun 26 11:57:27 2015
 @author: malte
 """
 
-from scipy import sparse
-import time
-
-import implicit
 import numpy as np
 import pandas as pd
-
+from scipy import sparse
+import implicit
+import time
 
 class ColdImplicit:
     '''
-    ColdImplicit( n_factors = 100, epochs = 10, lr = 0.01, reg=0.01, algo='als', idf_weight=False, session_key = 'playlist_id', item_key = 'track_id'):
-        
+    ColdImplicit(n_factors = 100, n_iterations = 10, learning_rate = 0.01, lambda_session = 0.0, lambda_item = 0.0, sigma = 0.05, init_normal = False, session_key = 'SessionId', item_key = 'ItemId')
+            
     Parameters
     --------
+    
+    
     '''
     def __init__(self, n_factors = 100, epochs = 10, lr = 0.01, reg=0.01, algo='als', idf_weight=False, session_key = 'playlist_id', item_key = 'track_id'):
         self.factors = n_factors
         self.epochs = epochs
         self.lr = lr
         self.reg = reg
-        
+                
         self.algo = algo
         self.idf_weight = idf_weight
         self.session_key = session_key
@@ -88,8 +88,12 @@ class ColdImplicit:
             self.idf = pd.DataFrame()
             self.idf['idf'] = data.groupby( self.item_key ).size()
             self.idf['idf'] = np.log( data[self.session_key].nunique() / self.idf['idf'] )
-            #self.idf = self.idf['idf'].to_dict()
-    
+            self.idf = pd.Series( index=self.idf.index.values, data=self.idf['idf'].values )
+        
+        self.tuser = 0
+        self.tpred = 0
+        self.count = 0
+        
     def predict( self, name=None, tracks=None, playlist_id=None, artists=None, num_hidden=None ):
         '''
         Gives predicton scores for a selected set of items on how likely they be the next item in the session.
@@ -116,24 +120,35 @@ class ColdImplicit:
             res_dict['confidence'] = []
             return pd.DataFrame.from_dict(res_dict)
         
-        
+        tstart = time.time()
         itemidxs = self.itemidmap[items]
         if self.idf_weight:
-            weight = self.idf.ix[items]['idf'].values
+            weight = self.idf[items].values
             factors = self.model.item_factors[itemidxs]
             factors = factors * np.array( [weight] ).T
             
             uF = factors.sum(axis=0) / weight.sum()
+            uF = uF.copy()
         else:
-            uF = self.model.item_factors[itemidxs].mean(axis=0)
+            uF = self.model.item_factors[itemidxs].mean(axis=0).copy()
+        self.tuser += (time.time() - tstart) 
+        
+        tstart = time.time()
         # Create things in the format
+        conf = np.dot( self.model.item_factors, uF )
         res_dict = {}
         res_dict['track_id'] =  self.itemidmap.index
-        res_dict['confidence'] = self.model.item_factors.dot(uF)
+        res_dict['confidence'] = conf
         res = pd.DataFrame.from_dict(res_dict)
+        self.tpred += (time.time() - tstart) 
+        
+        self.count += 1
         
         res = res[ ~np.in1d( res.track_id, tracks ) ]
-        res.sort_values( ['confidence','track_id'], ascending=[False,True], inplace=True )
+        res.sort_values( 'confidence', ascending=False, inplace=True )
         
-        return res.head( 500 )
+#         rlist = [ (self.tuser / self.count), (self.tpred / self.count) ]
+#         print( ','.join( map( str, rlist ) ) )
+        
+        return res.head(500)
     

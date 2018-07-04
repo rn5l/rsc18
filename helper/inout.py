@@ -7,6 +7,7 @@ Created on 11.04.2018
 import pandas as pd
 import numpy as np
 import time
+import os
 
 # data folder
 FOLDER = '/media/mpd-share/data_formated/'
@@ -152,6 +153,8 @@ def save_submission( frame, file, track='main', team='KAENEN', contact='iman.kam
     fh.close()
 
 def load_validation( folder ):
+    if not os.path.isfile( folder + PLAYLISTS_TRACKS_FILE_VAL ):
+        return
     lists = pd.read_csv( folder + PLAYLISTS_FILE )
     actions = pd.read_csv( folder + PLAYLISTS_TRACKS_FILE_VAL )
     actions_test = pd.read_csv( folder + PLAYLISTS_TRACKS_FILE )
@@ -180,6 +183,12 @@ def convert_feather( folder ):
     playlists.to_feather( folder + PLAYLISTS_FILE + '.fthr' )
     artists.to_feather( folder + ARTISTS_FILE + '.fthr' )
     tracks.to_feather( folder + TRACKS_FILE + '.fthr' )
+
+def ensure_dir(path, file=True):
+    if file:
+        path = os.path.dirname(path)
+    if not os.path.exists( path ):
+        os.makedirs( path )
 
 if __name__ == '__main__':
     

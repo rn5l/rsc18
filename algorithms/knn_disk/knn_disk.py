@@ -27,6 +27,8 @@ class KNNDisk:
         config_string = config_string + '_k' + str(self.num_neighbours)
         self.res_name=algo_name + '_' + config_string + '.csv'
         self.predsfile_path=self.folder + 'results' + str(self.write_num_recs) + '_' + self.res_name
+        self.session_key = session_key
+        self.item_key = item_key
     
     def train(self,train,test):
         self.run(train, test)
@@ -43,8 +45,8 @@ class KNNDisk:
         print(str(datetime.datetime.now()),'############################ start knn_disk run()')
         tstart = time.time()
 
-        container_idx=1
-        item_idx=3
+        container_idx = test_actions.columns.get_loc( self.session_key )
+        item_idx = test_actions.columns.get_loc( self.item_key )
 
         overwrite = False
 
