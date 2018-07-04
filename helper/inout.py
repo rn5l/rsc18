@@ -125,9 +125,9 @@ def load_submission( submission ):
     
     pass
 
-def save_submission( frame, file, track='main', team='KAENEN', contact='iman.kamehkhosh@tu-dortmund.de' ):
+def save_submission( folder, frame, file, track='main', team='KAENEN', contact='iman.kamehkhosh@tu-dortmund.de' ):
     
-    playlists, artists, tracks = load_meta(FOLDER, feather=True)
+    playlists, artists, tracks = load_meta(folder, feather=True)
         
     fh = open( file, 'w+' )
     
