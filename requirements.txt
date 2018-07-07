@@ -11,3 +11,4 @@ scikit-optimize==0.5.2
 fuzzywuzzy==0.16.0
 python-Levenshtein==0.12.0
 spotipy==2.4.4
+tqdm==4.23.4

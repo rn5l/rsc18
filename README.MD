@@ -21,3 +21,5 @@ pip install -r requirements.txt
     * The creation of our "creative" solution is commented out as the crawling is time consuming and marked as optional.
   * prepare_solution.py (Converts our solution format to the official submission format)
 * Most of the scripts defines FOLDER_TRAIN and FOLDER_TEST along with other important parameters in the head of the file
+  * To reproduce our final submissions change those folders to 'data/data_formatted/' and 'data/online/', respectively.
+  * As mentioned above, the creative solutions is commented out and can be included in line 53 of combine_parts.py once the metadata is fully craweled. 

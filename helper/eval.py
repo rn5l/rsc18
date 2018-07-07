@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import math
 import time
-from _collections import OrderedDict
+from collections import OrderedDict
 
 FOLDER_TEST = '../data/sample_similar/'
 FOLDER_TEST = '../data/sample_100k_random/'
