@@ -116,25 +116,27 @@ def main():
 def eval(list):
     
     preloaded = inout.load_validation(FOLDER_TEST)
-    preloaded[0].sort_values( ['num_samples','name'], inplace=True )
+
+    if preloaded is not None:
+        preloaded[0].sort_values( ['num_samples','name'], inplace=True )
     
-    all = pd.DataFrame()
-    all_parts = pd.DataFrame()
+        all = pd.DataFrame()
+        all_parts = pd.DataFrame()
     
-    for m in list:
-        res = pd.read_csv( FOLDER_TEST + 'results_'+m+'.csv' )
-        res, res_parts = evaluate( res, FOLDER_TEST, strict=True, preloaded=preloaded )
-        res['method'] = [m]
-        res_parts['method'] = [m]
+        for m in list:
+            res = pd.read_csv( FOLDER_TEST + 'results_'+m+'.csv' )
+            res, res_parts = evaluate( res, FOLDER_TEST, strict=True, preloaded=preloaded )
+            res['method'] = [m]
+            res_parts['method'] = [m]
     
-        all = pd.concat([ all, res ])
-        all_parts = pd.concat([ all_parts, res_parts ])
+            all = pd.concat([ all, res ])
+            all_parts = pd.concat([ all_parts, res_parts ])
     
-    print( all )
-    print( all_parts )
+        print( all )
+        print( all_parts )
     
-    all.to_csv( FOLDER_TEST + 'eval.csv' )
-    all_parts.to_csv( FOLDER_TEST + 'eval_parts.csv' )
+        all.to_csv( FOLDER_TEST + 'eval.csv' )
+        all_parts.to_csv( FOLDER_TEST + 'eval_parts.csv' )
     
 if __name__ == '__main__':
     main()
